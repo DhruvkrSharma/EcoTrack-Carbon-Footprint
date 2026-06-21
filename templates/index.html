@@ -1,185 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoTrack — Carbon Footprint Awareness Platform</title>
-  <meta name="description" content="Understand, track, and reduce your carbon footprint with AI-powered insights.">
-  <link rel="stylesheet" href="/static/style.css">
+  <title>EcoTrack - Carbon Footprint</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  
+  <style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-left: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .emerald-glow {
+        filter: drop-shadow(0 0 15px rgba(78, 222, 163, 0.2));
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(78, 222, 163, 0.3); border-radius: 10px; }
+    
+    /* Tab hiding logic */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary": "#4edea3",
+            "background": "#131315",
+            "surface": "#131315",
+            "surface-container-lowest": "#0e0e10",
+            "secondary": "#94de2d",
+            "on-surface-variant": "#bbcabf",
+            "on-background": "#e5e1e4",
+            "surface-container-high": "#2a2a2c"
+          },
+          "fontFamily": {
+            "label-sm": ["Geist"],
+            "headline-xl": ["Inter"],
+            "body-md": ["Inter"],
+            "data-display": ["Geist"],
+            "headline-lg": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="bg-background text-on-background font-body-md min-h-screen custom-scrollbar">
 
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="nav-brand">
-    <span class="leaf">🌿</span>
-    <span>EcoTrack</span>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-8 h-16">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+    <span class="font-headline-lg font-bold text-primary tracking-tight text-2xl">EcoTrack</span>
   </div>
-</nav>
+  <div class="flex items-center gap-6 hidden sm:flex">
+    <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+    <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+  </div>
+</header>
 
-<!-- Tab Navigation -->
-<div class="tab-nav">
-  <button class="tab-btn active" data-tab="footprint">🌍 My Footprint</button>
-  <button class="tab-btn" data-tab="compare">📊 Compare</button>
-  <button class="tab-btn" data-tab="log">📝 Activity Log</button>
-  <button class="tab-btn" data-tab="chat">🤖 AI Chat</button>
+<!-- Sub-header Navigation -->
+<div class="pt-24 pb-6 px-8 bg-background/40">
+  <div class="flex flex-wrap gap-3" id="tabNav">
+    <button class="tab-btn px-6 py-2 rounded-full font-label-sm text-sm bg-primary/20 text-primary border border-primary/30 active:scale-95 transition-all" data-tab="footprint">My Footprint</button>
+    <button class="tab-btn px-6 py-2 rounded-full font-label-sm text-sm text-on-surface-variant hover:bg-white/5 border border-transparent active:scale-95 transition-all" data-tab="compare">Compare</button>
+    <button class="tab-btn px-6 py-2 rounded-full font-label-sm text-sm text-on-surface-variant hover:bg-white/5 border border-transparent active:scale-95 transition-all" data-tab="log">Activity Log</button>
+    <button class="tab-btn px-6 py-2 rounded-full font-label-sm text-sm text-on-surface-variant hover:bg-white/5 border border-transparent active:scale-95 transition-all" data-tab="chat">AI Chat</button>
+  </div>
 </div>
 
-<div class="app-container">
-
+<!-- Main Content Area -->
+<main class="px-8 pb-32">
+  
   <!-- ════ TAB 1: MY FOOTPRINT ════ -->
   <div class="tab-panel active" id="tab-footprint">
-    <div class="card">
-      <h3>🌍 Calculate Your Carbon Footprint</h3>
-      <form id="calcForm" onsubmit="return handleCalc(event)">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="transportMode">Transport mode</label>
-            <select id="transportMode">
-              <option value="car_petrol">Car (Petrol)</option>
-              <option value="car_diesel">Car (Diesel)</option>
-              <option value="car_electric">Car (Electric)</option>
-              <option value="bus">Bus</option>
-              <option value="train">Train</option>
-              <option value="bicycle">Bicycle</option>
-              <option value="walking">Walking</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="transportKm">Daily km</label>
-            <input type="number" id="transportKm" placeholder="e.g. 20" min="0" value="15">
-          </div>
-          <div class="form-group">
-            <label for="electricityKwh">Monthly kWh</label>
-            <input type="number" id="electricityKwh" placeholder="e.g. 150" min="0" value="120">
-          </div>
-          <div class="form-group">
-            <label for="energySource">Energy source</label>
-            <select id="energySource">
-              <option value="electricity">Grid Electricity</option>
-              <option value="solar">Solar</option>
-              <option value="natural_gas">Natural Gas</option>
-              <option value="lpg">LPG</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="dietType">Diet type</label>
-            <select id="dietType">
-              <option value="vegan">Vegan</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="mixed" selected>Mixed / Flexitarian</option>
-              <option value="heavy_meat">Heavy Meat Eater</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="shoppingFreq">Shopping frequency</label>
-            <select id="shoppingFreq">
-              <option value="minimal">Minimal</option>
-              <option value="moderate" selected>Moderate</option>
-              <option value="frequent">Frequent</option>
-              <option value="heavy">Heavy</option>
-            </select>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      
+      <!-- Calculator Form -->
+      <section class="md:col-span-5">
+        <div class="glass-card p-6 rounded-3xl h-full flex flex-col justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-primary mb-2">Carbon Footprint Calculator</h2>
+            <p class="text-on-surface-variant mb-6 text-sm">Personalize your ecological profile by adjusting your lifestyle metrics below.</p>
+            
+            <form id="calcForm" onsubmit="return handleCalc(event)" class="space-y-4">
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Transport Mode</label>
+                <select id="transportMode" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+                  <option value="car_petrol">Car (Petrol)</option>
+                  <option value="car_diesel">Car (Diesel)</option>
+                  <option value="car_electric">Car (Electric)</option>
+                  <option value="bus">Bus</option>
+                  <option value="train">Train</option>
+                  <option value="bicycle">Bicycle</option>
+                  <option value="walking">Walking</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Daily Distance (km)</label>
+                <input type="number" id="transportKm" placeholder="e.g. 20" min="0" value="15" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+              </div>
+
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Energy Source</label>
+                <select id="energySource" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+                  <option value="electricity">Grid Electricity</option>
+                  <option value="solar">Solar</option>
+                  <option value="natural_gas">Natural Gas</option>
+                  <option value="lpg">LPG</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Monthly Usage (kWh / unit)</label>
+                <input type="number" id="electricityKwh" placeholder="e.g. 150" min="0" value="120" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+              </div>
+
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Dietary Preferences</label>
+                <select id="dietType" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+                  <option value="vegan">Vegan</option>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="mixed" selected>Mixed / Flexitarian</option>
+                  <option value="heavy_meat">Heavy Meat Eater</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Shopping Habits</label>
+                <select id="shoppingFreq" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+                  <option value="minimal">Minimal</option>
+                  <option value="moderate" selected>Moderate</option>
+                  <option value="frequent">Frequent</option>
+                  <option value="heavy">Heavy</option>
+                </select>
+              </div>
+              
+              <button type="submit" id="calcBtn" class="w-full mt-6 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-background font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                Calculate My Impact
+              </button>
+            </form>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-full" id="calcBtn">🌍 Calculate My Footprint</button>
-      </form>
+      </section>
+      
+      <!-- Visualization (Right Column) -->
+      <section class="md:col-span-7" id="resultSection" style="display:none;">
+        <div class="glass-card p-6 rounded-3xl h-full flex flex-col items-center justify-center relative overflow-hidden">
+          <div class="relative w-full max-w-sm aspect-square flex items-center justify-center mb-6">
+            <svg class="w-full h-full transform -rotate-90 emerald-glow" viewbox="0 0 100 100">
+              <circle cx="50" cy="50" fill="transparent" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="10"></circle>
+              <circle id="footprint-circle" class="transition-all duration-1000 ease-out" cx="50" cy="50" fill="transparent" r="40" stroke="url(#emerald-gradient)" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" stroke-width="12"></circle>
+              <defs>
+                <lineargradient id="emerald-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#4edea3"></stop>
+                  <stop offset="100%" stop-color="#94de2d"></stop>
+                </lineargradient>
+              </defs>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span class="text-5xl font-bold font-headline-xl text-white tracking-tighter" id="display-value">0.0</span>
+              <span class="text-on-surface-variant font-label-sm uppercase tracking-widest text-xs mt-1">Tonnes CO2/Year</span>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
+              <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-1">Your Rating</p>
+              <p id="resultRating" class="font-bold text-xl text-primary">--</p>
+            </div>
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
+              <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-1">Global Target</p>
+              <p class="font-bold text-xl text-white">2.0 <span class="text-sm font-normal text-on-surface-variant">t/y</span></p>
+            </div>
+          </div>
+          <p id="resultComp" class="text-sm text-center text-on-surface-variant mt-4 w-full"></p>
+        </div>
+      </section>
     </div>
 
-    <!-- Result (hidden until calculated) -->
-    <div id="resultSection" style="display:none;">
-      <div class="card">
-        <div class="result-hero">
-          <div class="result-big-num" id="resultNum">0</div>
-          <div class="result-unit">tonnes CO₂ per year</div>
-          <span class="result-rating" id="resultRating"></span>
-          <div class="result-comparison" id="resultComp"></div>
-        </div>
-        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+    <!-- AI Insights Section -->
+    <section class="mt-8" id="insightsContainer" style="display:none;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold text-white">AI-Powered Insights</h3>
       </div>
-      <div class="card">
-        <h3>💡 AI-Powered Insights</h3>
-        <div class="insights-grid" id="insightsGrid"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="insightsGrid">
+        <!-- Generated inside script.js -->
       </div>
-    </div>
+    </section>
   </div>
 
   <!-- ════ TAB 2: COMPARE ════ -->
   <div class="tab-panel" id="tab-compare">
-    <div class="card">
-      <h3>📊 How You Compare</h3>
+    <div class="glass-card p-8 rounded-3xl">
+      <h3 class="text-2xl font-bold text-white mb-6">📊 How You Compare</h3>
       <div id="compareContent">
-        <p class="empty-state">Calculate your footprint first to see comparisons.</p>
+        <p class="text-on-surface-variant">Calculate your footprint first to see comparisons.</p>
       </div>
     </div>
   </div>
 
   <!-- ════ TAB 3: ACTIVITY LOG ════ -->
   <div class="tab-panel" id="tab-log">
-    <div class="streak-bar" id="streakBar"></div>
-    <div class="card">
-      <h3>📝 Log an Activity</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="logCategory">Category</label>
-          <select id="logCategory" onchange="updateLogOptions()">
-            <option value="transport">Transport</option>
-            <option value="energy">Energy</option>
-            <option value="food">Food</option>
-            <option value="shopping">Shopping</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="logActivity">Activity</label>
-          <select id="logActivity"></select>
-        </div>
-        <div class="form-group">
-          <label for="logValue">Amount</label>
-          <input type="number" id="logValue" placeholder="e.g. 10" min="0">
-        </div>
-        <div class="form-group" style="justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="logActivity()">📝 Log It</button>
+    
+    <!-- Streak Banner -->
+    <div class="glass-card p-6 rounded-3xl mb-6 flex flex-wrap items-center gap-4 border-l-4 border-l-primary" id="streakBar">
+      <div class="text-xl font-bold text-white flex items-center gap-2">🔥 <span id="streakCountText">0</span> Day Streak</div>
+      <div id="badgesContainer" class="flex gap-2 flex-wrap"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Log Form -->
+      <div class="glass-card p-6 rounded-3xl lg:col-span-4 h-max">
+        <h3 class="text-xl font-bold text-white mb-4">📝 Log an Activity</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Category</label>
+            <select id="logCategory" onchange="updateLogOptions()" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+              <option value="transport">Transport</option>
+              <option value="energy">Energy</option>
+              <option value="food">Food</option>
+              <option value="shopping">Shopping</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Activity</label>
+            <select id="logActivity" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none"></select>
+          </div>
+          <div>
+            <label class="text-xs font-label-sm text-primary/80 uppercase tracking-wider block mb-1">Amount</label>
+            <input type="number" id="logValue" placeholder="e.g. 10" min="0" class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+          </div>
+          <button onclick="logActivity()" class="w-full py-3 rounded-full bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-background font-bold transition-all">Log It</button>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <h3>📋 Recent Activities</h3>
-      <div id="activityList">
-        <p class="empty-state">No activities logged yet. Start tracking!</p>
+
+      <!-- Charts & History -->
+      <div class="lg:col-span-8 space-y-6">
+        <div class="glass-card p-6 rounded-3xl">
+          <h3 class="text-xl font-bold text-white mb-4">📊 This Week</h3>
+          <div class="h-64 w-full"><canvas id="weeklyChart"></canvas></div>
+        </div>
+        
+        <div class="glass-card p-6 rounded-3xl">
+          <h3 class="text-xl font-bold text-white mb-4">📋 Recent Activities</h3>
+          <div id="activityList" class="overflow-x-auto">
+            <p class="text-on-surface-variant">No activities logged yet.</p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <h3>📊 This Week</h3>
-      <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
     </div>
   </div>
 
   <!-- ════ TAB 4: AI CHAT ════ -->
   <div class="tab-panel" id="tab-chat">
-    <div class="card chat-container">
-      <div class="quick-prompts">
-        <button class="quick-chip" onclick="sendQuick(this)">What's my biggest impact area?</button>
-        <button class="quick-chip" onclick="sendQuick(this)">Give me a 30-day challenge</button>
-        <button class="quick-chip" onclick="sendQuick(this)">How do I offset my footprint in India?</button>
+    <div class="glass-card rounded-3xl flex flex-col h-[70vh] max-h-[800px]">
+      
+      <!-- Quick Prompts -->
+      <div class="p-4 border-b border-white/10 flex gap-2 overflow-x-auto custom-scrollbar">
+        <button class="shrink-0 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-primary/20 hover:text-primary transition-colors whitespace-nowrap" onclick="sendQuick(this)">What's my biggest impact area?</button>
+        <button class="shrink-0 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-primary/20 hover:text-primary transition-colors whitespace-nowrap" onclick="sendQuick(this)">Give me a 30-day challenge</button>
+        <button class="shrink-0 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-primary/20 hover:text-primary transition-colors whitespace-nowrap" onclick="sendQuick(this)">How do I offset my footprint?</button>
       </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-msg ai">👋 Hi! I'm your EcoTrack climate coach. Ask me anything about reducing your carbon footprint!</div>
+      
+      <!-- Chat Messages -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar" id="chatMessages">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0">🤖</div>
+          <div class="bg-surface-container-high rounded-2xl rounded-tl-none px-4 py-3 text-on-background max-w-[85%]">
+            👋 Hi! I'm your EcoTrack climate coach. Ask me anything about reducing your footprint!
+          </div>
+        </div>
       </div>
-      <div class="typing-indicator" id="typingIndicator">
-        <div class="typing-dots"><span></span><span></span><span></span></div>
+      
+      <!-- Typing indicator -->
+      <div id="typingIndicator" class="hidden px-6 pb-2 text-sm text-primary animate-pulse">AI is typing...</div>
+      
+      <!-- Input -->
+      <div class="p-4 border-t border-white/10 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Ask about your carbon footprint..." onkeydown="if(event.key==='Enter')sendChat()" class="flex-1 bg-surface-container-lowest border border-white/10 rounded-full px-5 py-3 text-on-background focus:ring-2 focus:ring-primary/50 outline-none">
+        <button id="chatSendBtn" onclick="sendChat()" class="w-12 h-12 rounded-full bg-primary text-background flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shrink-0">
+          <span class="material-symbols-outlined">send</span>
+        </button>
       </div>
-      <div class="chat-input-bar">
-        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your carbon footprint..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="btn btn-primary" id="chatSendBtn" onclick="sendChat()">Send</button>
-      </div>
+
     </div>
   </div>
 
-</div>
-
-<footer class="footer">
-  🌿 EcoTrack — Built for a greener future · H2S PromptWars Challenge 3
-</footer>
+</main>
 
 <script src="/static/script.js"></script>
 </body>

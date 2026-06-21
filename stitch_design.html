@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EcoTrack - My Footprint</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .emerald-glow {
+            filter: drop-shadow(0 0 15px rgba(78, 222, 163, 0.2));
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(78, 222, 163, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#690005",
+                    "on-tertiary-container": "#00367a",
+                    "surface-container-low": "#1c1b1d",
+                    "primary": "#4edea3",
+                    "background": "#131315",
+                    "inverse-primary": "#006c49",
+                    "secondary-fixed-dim": "#91db2a",
+                    "secondary-container": "#7ac100",
+                    "error-container": "#93000a",
+                    "surface-tint": "#4edea3",
+                    "on-tertiary-fixed-variant": "#004395",
+                    "surface-variant": "#353437",
+                    "surface-dim": "#131315",
+                    "primary-container": "#10b981",
+                    "on-primary-fixed-variant": "#005236",
+                    "surface-bright": "#39393b",
+                    "secondary": "#94de2d",
+                    "on-tertiary": "#002e6a",
+                    "surface-container": "#201f22",
+                    "outline": "#86948a",
+                    "on-tertiary-fixed": "#001a42",
+                    "surface-container-highest": "#353437",
+                    "on-secondary-fixed": "#102000",
+                    "primary-fixed-dim": "#4edea3",
+                    "error": "#ffb4ab",
+                    "on-primary": "#003824",
+                    "tertiary-fixed": "#d8e2ff",
+                    "surface": "#131315",
+                    "on-primary-fixed": "#002113",
+                    "primary-fixed": "#6ffbbe",
+                    "secondary-fixed": "#acf847",
+                    "surface-container-lowest": "#0e0e10",
+                    "tertiary": "#adc6ff",
+                    "outline-variant": "#3c4a42",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#1f3700",
+                    "on-primary-container": "#00422b",
+                    "on-secondary-container": "#2c4900",
+                    "tertiary-fixed-dim": "#adc6ff",
+                    "on-surface-variant": "#bbcabf",
+                    "on-secondary-fixed-variant": "#304f00",
+                    "on-background": "#e5e1e4",
+                    "inverse-surface": "#e5e1e4",
+                    "inverse-on-surface": "#313032",
+                    "tertiary-container": "#71a1ff",
+                    "on-surface": "#e5e1e4",
+                    "surface-container-high": "#2a2a2c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "unit": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "margin-desktop": "40px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Geist"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"],
+                    "data-display": ["Geist"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-display": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen custom-scrollbar">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-margin-desktop h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="font-headline-lg font-bold text-primary tracking-tight">EcoTrack</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+</div>
+<div class="h-10 w-10 rounded-full border border-primary/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up professional headshot of a diverse young environmentalist in a brightly lit, modern office setting. Soft natural light illuminates her face, reflecting a clean, high-tech aesthetic with a blurred background of green foliage. The mood is optimistic and forward-thinking, consistent with a premium ecological data dashboard design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDXZc41a_s-yF6lGjqZPxCmNlLjBoryWpFH8-OeyO_x439UnfYB0Rswb4jivhv3FnsRYhI7JWlK9b0ghgxSx_Ga_mmqqvQAOVE3em2LNUgEb5Y6-PL5GtclvYTNmK3XYn-OaAvciA-sEZ1xrUJS3y0gcvZHkHUNvHJQSgZmsDAmLUB1FYcd-SGeUQo8RWvcMRNSRt_VEG_RwEc4N5ETjCSIYjoGg4Prboee60Olp5G4_fEWpo7-Add-1NfJ5dw0fo83NG8TvMc45U"/>
+</div>
+</div>
+</header>
+<!-- Sub-header Navigation -->
+<div class="pt-24 pb-6 px-margin-desktop bg-background/40">
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-2 rounded-full font-label-sm text-label-sm bg-primary/20 text-primary border border-primary/30 active:scale-95 transition-transform">My Footprint</button>
+<button class="px-6 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-white/5 active:scale-95 transition-transform">Compare</button>
+<button class="px-6 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-white/5 active:scale-95 transition-transform">Activity Log</button>
+<button class="px-6 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-white/5 active:scale-95 transition-transform">AI Chat</button>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="px-margin-desktop pb-32">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Calculator -->
+<section class="md:col-span-5">
+<div class="glass-card p-gutter rounded-lg h-full flex flex-col justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">Carbon Footprint Calculator</h2>
+<p class="text-on-surface-variant mb-8 font-body-md">Personalize your ecological profile by adjusting your lifestyle metrics below.</p>
+<div class="space-y-6">
+<!-- Transport -->
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-primary/80 uppercase tracking-wider">Transport</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-white/10 rounded-DEFAULT px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-on-surface">
+<option>Car</option>
+<option>Bus</option>
+<option>Train</option>
+<option>Flight</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Energy -->
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-primary/80 uppercase tracking-wider">Energy Source</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-white/10 rounded-DEFAULT px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-on-surface">
+<option>Electric</option>
+<option>Gas</option>
+<option>Solar</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Diet -->
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-primary/80 uppercase tracking-wider">Dietary Preferences</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-white/10 rounded-DEFAULT px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-on-surface">
+<option>Vegan</option>
+<option>Vegetarian</option>
+<option>Omnivore</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Shopping -->
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-primary/80 uppercase tracking-wider">Shopping Habits</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-white/10 rounded-DEFAULT px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-on-surface">
+<option>Minimal</option>
+<option>Moderate</option>
+<option>High</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-12 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-background font-bold text-lg shadow-lg hover:shadow-primary/20 active:scale-[0.98] transition-all">
+                        Calculate My Impact
+                    </button>
+</div>
+</section>
+<!-- Right Column: Visualization -->
+<section class="md:col-span-7">
+<div class="glass-card p-gutter rounded-lg h-full flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Background Shader Decor -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<div class="relative w-full max-w-md aspect-square flex items-center justify-center">
+<!-- Simulated Gradient Donut -->
+<svg class="w-full h-full transform -rotate-90 emerald-glow" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="10"></circle>
+<circle class="transition-all duration-1000 ease-out" cx="50" cy="50" fill="transparent" id="footprint-circle" r="40" stroke="url(#emerald-gradient)" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" stroke-width="12"></circle>
+<defs>
+<lineargradient id="emerald-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#4edea3"></stop>
+<stop offset="100%" stop-color="#94de2d"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-headline-xl text-headline-xl text-white tracking-tighter" id="display-value">0.0</span>
+<span class="text-on-surface-variant font-label-sm uppercase tracking-widest mt-[-8px]">Tonnes CO2/Year</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4 w-full">
+<div class="p-4 bg-white/5 rounded-DEFAULT border border-white/5">
+<p class="text-label-sm text-on-surface-variant mb-1">Global Avg</p>
+<p class="font-data-display text-on-surface">4.7 <span class="text-xs text-on-surface-variant font-normal">t/y</span></p>
+</div>
+<div class="p-4 bg-white/5 rounded-DEFAULT border border-white/5">
+<p class="text-label-sm text-on-surface-variant mb-1">Your Target</p>
+<p class="font-data-display text-primary">2.0 <span class="text-xs text-on-surface-variant font-normal">t/y</span></p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Section: Insights -->
+<section class="mt-gutter">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white">AI-Powered Insights</h3>
+<button class="text-primary font-label-sm flex items-center gap-1 hover:underline">
+                    View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Insight Card 1 -->
+<div class="glass-card p-5 rounded-lg border-l-4 border-l-primary hover:bg-white/10 transition-colors group">
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-2 rounded-full text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface leading-snug">Switching to LED bulbs can save 50kg CO2/year.</p>
+</div>
+</div>
+</div>
+<!-- Insight Card 2 -->
+<div class="glass-card p-5 rounded-lg border-l-4 border-l-secondary hover:bg-white/10 transition-colors group">
+<div class="flex items-start gap-4">
+<div class="bg-secondary/20 p-2 rounded-full text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">directions_bike</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface leading-snug">Cycling twice a week reduces transport footprint by 15%.</p>
+</div>
+</div>
+</div>
+<!-- Insight Card 3 -->
+<div class="glass-card p-5 rounded-lg border-l-4 border-l-primary hover:bg-white/10 transition-colors group">
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-2 rounded-full text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface leading-snug">One meat-free day weekly saves 120kg CO2 annually.</p>
+</div>
+</div>
+</div>
+<!-- Insight Card 4 -->
+<div class="glass-card p-5 rounded-lg border-l-4 border-l-secondary hover:bg-white/10 transition-colors group">
+<div class="flex items-start gap-4">
+<div class="bg-secondary/20 p-2 rounded-full text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface leading-snug">Buying second-hand clothes saves 12kg CO2 per item.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 md:hidden bg-surface-container/90 backdrop-blur-lg border-t border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+<button class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-4 py-1 scale-90 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="font-label-sm text-label-sm-mobile">Footprint</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant/50 transition-all">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label-sm text-label-sm-mobile">Compare</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant/50 transition-all">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm-mobile">History</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant/50 transition-all">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm-mobile">AI Chat</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction for the calculator
+        const calcBtn = document.querySelector('button.from-primary');
+        const displayValue = document.getElementById('display-value');
+        const circle = document.getElementById('footprint-circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+
+        calcBtn.addEventListener('click', () => {
+            // Animation for calculating
+            calcBtn.innerText = "Analyzing...";
+            calcBtn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                const randomValue = (Math.random() * 8 + 1).toFixed(1);
+                displayValue.innerText = randomValue;
+                
+                // Update circle progress
+                // We'll normalize randomValue to a percentage of 10.0
+                const percent = Math.min(randomValue / 10, 1);
+                const offset = circumference - (percent * circumference);
+                circle.style.strokeDashoffset = offset;
+                
+                calcBtn.innerText = "Calculate My Impact";
+                calcBtn.classList.remove('opacity-80');
+            }, 800);
+        });
+
+        // Initial animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const initialValue = 3.2;
+                displayValue.innerText = initialValue;
+                const percent = initialValue / 10;
+                const offset = circumference - (percent * circumference);
+                circle.style.strokeDashoffset = offset;
+            }, 500);
+        });
+    </script>
+</body></html>

@@ -1,15 +1,21 @@
-/* ===== EcoTrack Frontend ===== */
+/* ===== EcoTrack Frontend (Lumina Nature Tailwind UI) ===== */
 
 let lastResult = null;
-let donutChart = null;
 let weeklyChartObj = null;
 
 /* ── Tab Switching ── */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // Reset all tabs
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('bg-primary/20', 'text-primary', 'border-primary/30');
+      b.classList.add('text-on-surface-variant', 'border-transparent');
+    });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
+    
+    // Activate clicked tab
+    btn.classList.add('bg-primary/20', 'text-primary', 'border-primary/30');
+    btn.classList.remove('text-on-surface-variant', 'border-transparent');
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
   });
 });
@@ -18,8 +24,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 async function handleCalc(e) {
   e.preventDefault();
   const btn = document.getElementById('calcBtn');
-  btn.textContent = '⏳ Calculating...';
+  btn.textContent = '⏳ Analyzing...';
   btn.disabled = true;
+  btn.classList.add('opacity-80');
 
   const data = {
     transport_mode: document.getElementById('transportMode').value,
@@ -41,54 +48,53 @@ async function handleCalc(e) {
   } catch (err) {
     console.error(err);
   } finally {
-    btn.textContent = '🌍 Calculate My Footprint';
+    btn.textContent = 'Calculate My Impact';
     btn.disabled = false;
+    btn.classList.remove('opacity-80');
   }
 }
 
 function showResult(r) {
   document.getElementById('resultSection').style.display = 'block';
-  document.getElementById('resultNum').textContent = r.total_tonnes;
+  document.getElementById('insightsContainer').style.display = 'block';
+  
+  // Set numeric value
+  const displayValue = document.getElementById('display-value');
+  displayValue.textContent = r.total_tonnes;
+  
+  // Update donut SVG offset
+  const circle = document.getElementById('footprint-circle');
+  const circumference = 251.2; // 2 * pi * r (r=40)
+  // Assume a scale where 10 tonnes = full circle (100%)
+  const percent = Math.min(r.total_tonnes / 10, 1);
+  const offset = circumference - (percent * circumference);
+  circle.style.strokeDashoffset = offset;
+
+  // Rating and Comparison
   const badge = document.getElementById('resultRating');
   badge.textContent = r.rating;
-  badge.style.background = r.rating_color + '20';
-  badge.style.color = r.rating_color;
   document.getElementById('resultComp').textContent = r.comparison;
-
-  // Donut chart
-  const ctx = document.getElementById('donutChart').getContext('2d');
-  if (donutChart) donutChart.destroy();
-  const labels = Object.keys(r.breakdown);
-  const vals = Object.values(r.breakdown);
-  const colors = ['#3b82f6', '#d97706', '#3d9922', '#8b5cf6'];
-  donutChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{ data: vals, backgroundColor: colors, borderWidth: 0 }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: {
-        legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { family: "'Inter'" } } }
-      }
-    }
-  });
 
   // Insights
   const grid = document.getElementById('insightsGrid');
-  grid.innerHTML = (r.insights || []).map(i => `
-    <div class="insight-card">
-      <div class="insight-header">
-        <span class="insight-icon">${i.icon}</span>
-        <span class="insight-title">${i.title}</span>
+  grid.innerHTML = (r.insights || []).map((i, index) => {
+    // alternate border colors for variety
+    const borderColor = index % 2 === 0 ? 'border-l-primary' : 'border-l-secondary';
+    const iconColorClass = index % 2 === 0 ? 'text-primary bg-primary/20' : 'text-secondary bg-secondary/20';
+    return `
+    <div class="glass-card p-5 rounded-2xl border-l-4 ${borderColor} hover:bg-white/10 transition-colors group">
+      <div class="flex items-start gap-4">
+        <div class="${iconColorClass} p-2 rounded-full text-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+          ${i.icon}
+        </div>
+        <div>
+          <h4 class="font-bold text-white text-sm mb-1">${i.title}</h4>
+          <p class="font-body-md text-on-surface-variant text-sm leading-snug">${i.desc}</p>
+          ${i.saving ? `<span class="inline-block mt-2 text-xs text-primary font-bold">📉 ${i.saving}</span>` : ''}
+        </div>
       </div>
-      <div class="insight-desc">${i.desc}</div>
-      ${i.saving ? `<span class="insight-saving">📉 ${i.saving}</span>` : ''}
     </div>
-  `).join('');
+  `}).join('');
 }
 
 /* ── Compare ── */
@@ -96,7 +102,7 @@ document.querySelector('[data-tab="compare"]').addEventListener('click', loadCom
 
 async function loadCompare() {
   if (!lastResult) {
-    document.getElementById('compareContent').innerHTML = '<p class="empty-state">Calculate your footprint first to see comparisons.</p>';
+    document.getElementById('compareContent').innerHTML = '<p class="text-on-surface-variant">Calculate your footprint first to see comparisons.</p>';
     return;
   }
   try {
@@ -113,41 +119,45 @@ async function loadCompare() {
 function renderCompare(d) {
   const maxVal = Math.max(d.user, d.us_avg, 16);
   const bars = [
-    { label: 'You', val: d.user, color: '#3d9922' },
-    { label: 'India avg', val: d.india_avg, color: '#2d6a0f' },
-    { label: 'Global avg', val: d.global_avg, color: '#d97706' },
-    { label: 'US avg', val: d.us_avg, color: '#dc2626' },
-    { label: '2°C target', val: d.target_2c, color: '#0ea5e9' },
+    { label: 'You', val: d.user, color: '#4edea3' },
+    { label: 'India avg', val: d.india_avg, color: '#10b981' },
+    { label: 'Global avg', val: d.global_avg, color: '#84cc16' },
+    { label: 'US avg', val: d.us_avg, color: '#ef4444' },
+    { label: '2°C target', val: d.target_2c, color: '#3b82f6' },
   ];
+  
   const barsHtml = bars.map(b => `
-    <div class="compare-row">
-      <span class="compare-label">${b.label}</span>
-      <div class="compare-track">
-        <div class="compare-fill" style="width:${(b.val / maxVal * 100)}%; background:${b.color}">${b.val}t</div>
+    <div class="mb-4">
+      <div class="flex justify-between text-sm mb-1">
+        <span class="text-white">${b.label}</span>
+        <span class="text-on-surface-variant">${b.val} t</span>
+      </div>
+      <div class="w-full bg-surface-container-lowest rounded-full h-3">
+        <div class="h-3 rounded-full" style="width:${(b.val / maxVal * 100)}%; background-color:${b.color}"></div>
       </div>
     </div>
   `).join('');
 
   document.getElementById('compareContent').innerHTML = `
-    <div class="compare-bar-group">${barsHtml}</div>
-    <p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin:1rem 0;">
-      You're better than <strong>${Math.round(d.percentile_india)}%</strong> of Indians
+    <div class="mb-8">${barsHtml}</div>
+    <p class="text-center text-sm text-on-surface-variant mb-6">
+      You're better than <strong class="text-primary">${Math.round(d.percentile_india)}%</strong> of Indians
     </p>
-    <div class="analogy-grid">
-      <div class="card analogy-card">
-        <div class="analogy-icon">🌳</div>
-        <div class="analogy-num">${d.trees_to_offset}</div>
-        <div class="analogy-label">trees needed to offset</div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="glass-card p-4 rounded-2xl text-center">
+        <div class="text-3xl mb-2">🌳</div>
+        <div class="text-2xl font-bold text-white">${d.trees_to_offset}</div>
+        <div class="text-xs text-on-surface-variant">trees needed to offset</div>
       </div>
-      <div class="card analogy-card">
-        <div class="analogy-icon">✈️</div>
-        <div class="analogy-num">${d.flights_equivalent}</div>
-        <div class="analogy-label">Delhi-Mumbai flights</div>
+      <div class="glass-card p-4 rounded-2xl text-center">
+        <div class="text-3xl mb-2">✈️</div>
+        <div class="text-2xl font-bold text-white">${d.flights_equivalent}</div>
+        <div class="text-xs text-on-surface-variant">Delhi-Mumbai flights</div>
       </div>
-      <div class="card analogy-card">
-        <div class="analogy-icon">🚗</div>
-        <div class="analogy-num">${d.car_km_equivalent.toLocaleString()}</div>
-        <div class="analogy-label">km driven by car</div>
+      <div class="glass-card p-4 rounded-2xl text-center">
+        <div class="text-3xl mb-2">🚗</div>
+        <div class="text-2xl font-bold text-white">${d.car_km_equivalent.toLocaleString()}</div>
+        <div class="text-xs text-on-surface-variant">km driven by car</div>
       </div>
     </div>
   `;
@@ -216,20 +226,27 @@ async function logActivity() {
 function renderActivities(activities) {
   const el = document.getElementById('activityList');
   if (!activities || activities.length === 0) {
-    el.innerHTML = '<p class="empty-state">No activities logged yet. Start tracking!</p>';
+    el.innerHTML = '<p class="text-on-surface-variant">No activities logged yet. Start tracking!</p>';
     return;
   }
-  el.innerHTML = `<table class="activity-table">
-    <thead><tr><th>Date</th><th>Activity</th><th>CO₂</th></tr></thead>
+  el.innerHTML = `<table class="w-full text-left text-sm text-on-surface-variant">
+    <thead class="text-xs uppercase bg-white/5 text-on-background">
+      <tr><th class="px-4 py-3 rounded-tl-xl rounded-bl-xl">Date</th><th class="px-4 py-3">Activity</th><th class="px-4 py-3 rounded-tr-xl rounded-br-xl">CO₂</th></tr>
+    </thead>
     <tbody>${activities.slice(0, 10).map(a => `
-      <tr><td>${a.date}</td><td>${a.activity}</td><td>${a.co2_kg} kg</td></tr>
+      <tr class="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
+        <td class="px-4 py-3">${a.date}</td>
+        <td class="px-4 py-3 font-medium text-white">${a.activity}</td>
+        <td class="px-4 py-3 text-primary">${a.co2_kg} kg</td>
+      </tr>
     `).join('')}</tbody>
   </table>`;
 }
 
 function renderStreak(streak, badges) {
-  const bar = document.getElementById('streakBar');
-  let html = `<div class="streak-count">🔥 ${streak} day streak</div>`;
+  document.getElementById('streakCountText').textContent = streak;
+  const container = document.getElementById('badgesContainer');
+  
   if (badges && badges.length > 0) {
     const badgeDefs = {
       first_log: { icon: '🌱', name: 'First Log' },
@@ -238,12 +255,13 @@ function renderStreak(streak, badges) {
       plant_based: { icon: '🥬', name: 'Plant Based' },
       cycle_hero: { icon: '🚴', name: 'Cycle Hero' },
     };
-    html += badges.map(b => {
+    container.innerHTML = badges.map(b => {
       const def = badgeDefs[b] || { icon: '🏅', name: b };
-      return `<span class="badge-chip">${def.icon} ${def.name}</span>`;
+      return `<span class="bg-secondary/20 text-secondary px-3 py-1 text-xs rounded-full font-bold border border-secondary/30">${def.icon} ${def.name}</span>`;
     }).join('');
+  } else {
+    container.innerHTML = '';
   }
-  bar.innerHTML = html;
 }
 
 async function loadBadges() {
@@ -283,16 +301,16 @@ function renderWeekly(data) {
       datasets: [{
         label: 'kg CO₂',
         data: data.values,
-        backgroundColor: '#3d9922',
-        borderRadius: 6,
+        backgroundColor: '#4edea3',
+        borderRadius: 4,
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        y: { beginAtZero: true, grid: { color: '#d4e8c2' } },
-        x: { grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#bbcabf' } },
+        x: { grid: { display: false }, ticks: { color: '#bbcabf' } },
       },
       plugins: { legend: { display: false } }
     }
@@ -315,11 +333,18 @@ async function sendChat() {
   const typing = document.getElementById('typingIndicator');
 
   // User message
-  messages.innerHTML += `<div class="chat-msg user">${escapeHtml(msg)}</div>`;
+  messages.innerHTML += `
+    <div class="flex items-start gap-3 justify-end">
+      <div class="bg-primary/20 border border-primary/30 rounded-2xl rounded-tr-none px-4 py-3 text-white max-w-[85%]">
+        ${escapeHtml(msg)}
+      </div>
+      <div class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center shrink-0">👤</div>
+    </div>`;
+  
   input.value = '';
   input.disabled = true;
   sendBtn.disabled = true;
-  typing.classList.add('visible');
+  typing.classList.remove('hidden');
   messages.scrollTop = messages.scrollHeight;
 
   const context = lastResult ? {
@@ -336,11 +361,23 @@ async function sendChat() {
       body: JSON.stringify({ message: msg, context }),
     });
     const data = await res.json();
-    messages.innerHTML += `<div class="chat-msg ai">${escapeHtml(data.reply)}</div>`;
+    messages.innerHTML += `
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0">🤖</div>
+        <div class="bg-surface-container-high rounded-2xl rounded-tl-none px-4 py-3 text-on-background max-w-[85%]">
+          ${escapeHtml(data.reply)}
+        </div>
+      </div>`;
   } catch (err) {
-    messages.innerHTML += `<div class="chat-msg ai">Sorry, something went wrong. Try again!</div>`;
+    messages.innerHTML += `
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">⚠️</div>
+        <div class="bg-surface-container-high rounded-2xl rounded-tl-none px-4 py-3 text-on-background max-w-[85%]">
+          Sorry, something went wrong. Try again!
+        </div>
+      </div>`;
   } finally {
-    typing.classList.remove('visible');
+    typing.classList.add('hidden');
     input.disabled = false;
     sendBtn.disabled = false;
     input.focus();
