@@ -85,10 +85,10 @@
   
   <!-- ════ TAB 1: MY FOOTPRINT ════ -->
   <div class="tab-panel active" id="tab-footprint">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div class="flex flex-col md:flex-row gap-6 justify-center items-start transition-all duration-700 ease-in-out" id="footprintContainer">
       
       <!-- Calculator Form -->
-      <section class="md:col-span-5">
+      <section class="w-full max-w-2xl mx-auto transition-all duration-700 ease-in-out" id="calculatorSection">
         <div class="glass-card p-6 rounded-3xl h-full flex flex-col justify-between">
           <div>
             <h2 class="text-2xl font-bold text-primary mb-2">Carbon Footprint Calculator</h2>
@@ -157,7 +157,7 @@
       </section>
       
       <!-- Visualization (Right Column) -->
-      <section class="md:col-span-7" id="resultSection" style="display:none;">
+      <section class="w-full md:w-7/12 opacity-0 hidden transition-opacity duration-700 ease-in-out" id="resultSection">
         <div class="glass-card p-6 rounded-3xl h-full flex flex-col items-center justify-center relative overflow-hidden">
           <div class="relative w-full max-w-sm aspect-square flex items-center justify-center mb-6">
             <svg class="w-full h-full transform -rotate-90 emerald-glow" viewbox="0 0 100 100">

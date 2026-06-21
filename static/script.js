@@ -55,7 +55,23 @@ async function handleCalc(e) {
 }
 
 function showResult(r) {
-  document.getElementById('resultSection').style.display = 'block';
+  // Trigger layout shift
+  const calcSection = document.getElementById('calculatorSection');
+  const resultSection = document.getElementById('resultSection');
+  
+  // Shift calculator to left
+  calcSection.classList.remove('max-w-2xl', 'mx-auto');
+  calcSection.classList.add('md:w-5/12');
+  
+  // Show results
+  resultSection.classList.remove('hidden');
+  
+  // Allow DOM to update display:block before fading in
+  setTimeout(() => {
+    resultSection.classList.remove('opacity-0');
+    resultSection.classList.add('opacity-100');
+  }, 50);
+
   document.getElementById('insightsContainer').style.display = 'block';
   
   // Set numeric value
