@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack — Carbon Footprint Awareness Platform</title>
+  <meta name="description" content="Understand, track, and reduce your carbon footprint with personalized insights and actionable eco-tips.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-orbs">
+  <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <span class="leaf">🌿</span>
+    <span>EcoTrack</span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" class="active">Home</a></li>
+    <li><a href="#calculator">Calculator</a></li>
+    <li><a href="#tips">Eco Tips</a></li>
+    <li><a href="#tracker">Tracker</a></li>
+    <li><a href="#insights">Insights</a></li>
+  </ul>
+  <a href="#calculator" class="nav-cta">Calculate Now</a>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section class="section hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Live Carbon Tracker
+    </div>
+    <h1>
+      Know Your Impact.<br>
+      <span class="gradient-text">Shrink Your Footprint.</span>
+    </h1>
+    <p>
+      EcoTrack helps you understand your carbon emissions, discover personalized
+      reduction strategies, and track your journey toward a greener future.
+    </p>
+    <div class="hero-actions">
+      <a href="#calculator" class="btn-primary">🌍 Calculate Footprint</a>
+      <a href="#tips" class="btn-secondary">View Eco Tips</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="number" id="statTonnes">4.0</div>
+        <div class="label">tonnes CO₂/year avg</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number" id="statTrees">60</div>
+        <div class="label">trees to offset</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number" id="statActions">8</div>
+        <div class="label">simple actions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Calculator Section -->
+<section class="section" id="calculator">
+  <div class="section-header animate-in">
+    <span class="tag">Calculator</span>
+    <h2>Estimate Your Carbon Footprint</h2>
+    <p>Enter your lifestyle details to get an estimated annual CO₂ footprint and personalized insights.</p>
+  </div>
+
+  <div class="calc-grid">
+    <div class="calc-form">
+      <!-- Transport -->
+      <div class="calc-category animate-in">
+        <div class="calc-category-header">
+          <div class="calc-category-icon transport">🚗</div>
+          <span class="calc-category-title">Transportation</span>
+        </div>
+        <div class="form-group">
+          <label for="transportMode">Primary transport mode</label>
+          <select id="transportMode">
+            <option value="car_petrol">Car (Petrol)</option>
+            <option value="car_diesel">Car (Diesel)</option>
+            <option value="car_electric">Car (Electric)</option>
+            <option value="motorcycle">Motorcycle</option>
+            <option value="bus">Bus</option>
+            <option value="train">Train</option>
+            <option value="bicycle">Bicycle</option>
+            <option value="walking">Walking</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="transportKm">Daily commute distance (km)</label>
+          <input type="number" id="transportKm" placeholder="e.g. 20" min="0" value="15">
+        </div>
+      </div>
+
+      <!-- Energy -->
+      <div class="calc-category animate-in">
+        <div class="calc-category-header">
+          <div class="calc-category-icon energy">⚡</div>
+          <span class="calc-category-title">Home Energy</span>
+        </div>
+        <div class="form-group">
+          <label for="energySource">Primary energy source</label>
+          <select id="energySource">
+            <option value="electricity">Grid Electricity</option>
+            <option value="natural_gas">Natural Gas</option>
+            <option value="lpg">LPG</option>
+            <option value="solar">Solar</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="electricityKwh">Monthly consumption (kWh / units)</label>
+          <input type="number" id="electricityKwh" placeholder="e.g. 150" min="0" value="120">
+        </div>
+      </div>
+
+      <!-- Food -->
+      <div class="calc-category animate-in">
+        <div class="calc-category-header">
+          <div class="calc-category-icon food">🥗</div>
+          <span class="calc-category-title">Diet</span>
+        </div>
+        <div class="form-group">
+          <label for="dietType">Dietary preference</label>
+          <select id="dietType">
+            <option value="vegan">Vegan</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="mixed" selected>Mixed / Flexitarian</option>
+            <option value="heavy_meat">Heavy Meat Eater</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Shopping -->
+      <div class="calc-category animate-in">
+        <div class="calc-category-header">
+          <div class="calc-category-icon shopping">🛒</div>
+          <span class="calc-category-title">Shopping & Consumption</span>
+        </div>
+        <div class="form-group">
+          <label for="shoppingFreq">Shopping frequency</label>
+          <select id="shoppingFreq">
+            <option value="minimal">Minimal (essentials only)</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="frequent">Frequent</option>
+            <option value="heavy">Heavy / Shopaholic</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="calc-submit" id="calcBtn" onclick="calculateFootprint()">
+        🌍 Calculate My Footprint
+      </button>
+    </div>
+
+    <!-- Result Panel -->
+    <div class="glass-card calc-result animate-in" id="resultPanel">
+      <div class="result-circle-wrap">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs>
+            <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#14b8a6"/>
+            </linearGradient>
+          </defs>
+          <circle class="circle-bg" cx="100" cy="100" r="85"/>
+          <circle class="circle-progress" id="progressCircle" cx="100" cy="100" r="85"
+                  stroke-dasharray="534" stroke-dashoffset="534"/>
+        </svg>
+        <div class="result-value">
+          <span class="num" id="resultNum">0.0</span>
+          <span class="unit">tonnes CO₂/year</span>
+        </div>
+      </div>
+      <p class="result-comparison" id="resultComparison">Fill in the form and calculate</p>
+      <div class="result-breakdown" id="resultBreakdown">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Eco Tips -->
+<section class="section" id="tips">
+  <div class="section-header animate-in">
+    <span class="tag">Eco Tips</span>
+    <h2>Simple Actions, Big Impact</h2>
+    <p>Small lifestyle changes that collectively make a massive difference for our planet.</p>
+  </div>
+  <div class="tips-grid">
+    {% for tip in tips %}
+    <div class="glass-card tip-card animate-in">
+      <div class="tip-icon" style="background:{{ tip.bg }}">{{ tip.icon }}</div>
+      <h3>{{ tip.title }}</h3>
+      <p>{{ tip.desc }}</p>
+      <div class="tip-impact">📉 {{ tip.impact }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Activity Tracker -->
+<section class="section" id="tracker">
+  <div class="section-header animate-in">
+    <span class="tag">Daily Tracker</span>
+    <h2>Log & Monitor Activities</h2>
+    <p>Track your daily carbon-emitting activities and visualize your weekly progress.</p>
+  </div>
+  <div class="tracker-layout">
+    <!-- Log Form -->
+    <div class="glass-card animate-in">
+      <h3 style="margin-bottom:1rem; font-size:1.05rem;">➕ Log an Activity</h3>
+      <div class="log-form">
+        <div class="form-group">
+          <label for="logCategory">Category</label>
+          <select id="logCategory" onchange="updateLogActivities()">
+            <option value="transport">Transport</option>
+            <option value="energy">Energy</option>
+            <option value="food">Food</option>
+            <option value="shopping">Shopping</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="logActivity">Activity</label>
+          <select id="logActivity">
+            <option value="car_petrol">Car (Petrol)</option>
+            <option value="bus">Bus</option>
+            <option value="train">Train</option>
+            <option value="bicycle">Bicycle</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="logValue">Amount (km / kWh / kg / items)</label>
+          <input type="number" id="logValue" placeholder="e.g. 10" min="0">
+        </div>
+        <button class="calc-submit" onclick="logActivity()">📝 Log Activity</button>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:0.75rem;">Recent Logs</h4>
+        <div id="logList" class="log-entries">
+          <div class="log-empty">No activities logged yet. Start tracking!</div>
+        </div>
+      </div>
+    </div>
+    <!-- Weekly Chart -->
+    <div class="glass-card animate-in">
+      <h3 style="margin-bottom:1.5rem; font-size:1.05rem;">📊 This Week's Emissions</h3>
+      <div class="chart-placeholder" id="weeklyChart">
+        <!-- Filled by JS -->
+      </div>
+      <div style="margin-top:1.5rem; text-align:center;">
+        <p style="font-size:0.8rem; color:var(--text-muted);">Weekly Total</p>
+        <p style="font-size:1.8rem; font-weight:800; color:var(--accent-green);" id="weeklyTotal">0.00 kg</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Personalized Insights -->
+<section class="section" id="insights">
+  <div class="section-header animate-in">
+    <span class="tag">Insights</span>
+    <h2>Your Personalized Recommendations</h2>
+    <p>Based on your footprint calculation, here are tailored actions to reduce your impact.</p>
+  </div>
+  <div class="insights-list" id="insightsList">
+    <div class="glass-card insight-card animate-in">
+      <div class="insight-icon">🎯</div>
+      <div class="insight-body">
+        <h4>Calculate your footprint first</h4>
+        <p>Use the calculator above to get personalized recommendations tailored to your lifestyle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pledge CTA -->
+<section class="section">
+  <div class="pledge-section animate-in">
+    <h2>🌍 Take the Green Pledge</h2>
+    <p>Join thousands committing to reduce their carbon footprint by at least 10% this year.</p>
+    <button class="btn-primary" id="pledgeBtn" onclick="takePledge()">✋ I Take the Pledge</button>
+    <div class="pledge-counter">
+      <div class="pledge-stat">
+        <div class="p-num" id="pledgeCount">12,847</div>
+        <div class="p-label">pledges taken</div>
+      </div>
+      <div class="pledge-stat">
+        <div class="p-num">4,200t</div>
+        <div class="p-label">CO₂ saved collectively</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>🌿 EcoTrack — Built for a greener future · Carbon Footprint Awareness Platform</p>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
