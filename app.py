@@ -8,9 +8,11 @@ from datetime import datetime
 import json
 import uuid
 import os
+from dotenv import load_dotenv
 
 from groq import Groq
 
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
